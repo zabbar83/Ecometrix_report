@@ -37,18 +37,16 @@ from (SELECT cd.sl,
                                           --and d.input_type = 0
                                           AND d.is_active = 1
                                  CROSS JOIN (SELECT LEVEL AS sl,
-                           TO_TIMESTAMP(TO_CHAR(ADD_MONTHS(TRUNC(TO_DATE(:fromMonth, 'DD-MON-YY'), 'MM'), LEVEL - 1),
-                                                'DD-MON-YY') || ' 12.00.01.000000000 AM',
-                                        'DD-MON-YY HH.MI.SS.FF9 AM') AS start_time,
-                           TO_TIMESTAMP(TO_CHAR(ADD_MONTHS(TRUNC(TO_DATE(:fromMonth, 'DD-MON-YY'), 'MM'), LEVEL),
-                                                'DD-MON-YY') || ' 12.00.00.000000000 AM',
-                                        'DD-MON-YY HH.MI.SS.FF9 AM') AS end_time
-                    FROM dual
-                    CONNECT BY LEVEL <= MONTHS_BETWEEN(
-                                           ADD_MONTHS(TRUNC(TO_DATE(:toMonth, 'DD-MON-YY'), 'MM'), 1),
-                                           TRUNC(TO_DATE(:fromMonth, 'DD-MON-YY'), 'MM')
-                                        )
-                    ) tr) dtr
+                                                       TO_TIMESTAMP(
+                                                           TO_CHAR(ADD_MONTHS(TO_DATE(:fromMonth, 'DD-MON-YY'), LEVEL - 1),
+                                                                   'DD-MON-YY') || ' 12.00.01.000000000 AM',
+                                                           'DD-MON-YY HH.MI.SS.FF9 AM') AS start_time,
+                                                       TO_TIMESTAMP(
+                                                           TO_CHAR(ADD_MONTHS(TO_DATE(:fromMonth, 'DD-MON-YY'), LEVEL),
+                                                                   'DD-MON-YY') || ' 12.00.00.000000000 AM',
+                                                           'DD-MON-YY HH.MI.SS.FF9 AM') AS end_time
+                                                FROM dual
+                                                CONNECT BY LEVEL <= 12) tr) dtr
                            LEFT JOIN emeter_health_reading ehr
                                      ON dtr.id = ehr.device_id
                                          AND ehr.date_time BETWEEN dtr.start_time AND dtr.end_time
