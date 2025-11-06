@@ -38,11 +38,11 @@ from (SELECT cd.sl,
                                           AND d.is_active = 1
                                  CROSS JOIN (SELECT LEVEL AS sl,
                                                        TO_TIMESTAMP(
-                                                           TO_CHAR(ADD_MONTHS(TO_DATE(:fromMonth, 'DD-MON-YY'), LEVEL - 1),
+                                                           TO_CHAR(ADD_MONTHS(TO_DATE(:fromMonth, 'DD-MM-YYYY'), LEVEL - 1),
                                                                    'DD-MON-YY') || ' 12.00.01.000000000 AM',
                                                            'DD-MON-YY HH.MI.SS.FF9 AM') AS start_time,
                                                        TO_TIMESTAMP(
-                                                           TO_CHAR(ADD_MONTHS(TO_DATE(:fromMonth, 'DD-MON-YY'), LEVEL),
+                                                           TO_CHAR(ADD_MONTHS(TO_DATE(:fromMonth, 'DD-MM-YYYY'), LEVEL),
                                                                    'DD-MON-YY') || ' 12.00.00.000000000 AM',
                                                            'DD-MON-YY HH.MI.SS.FF9 AM') AS end_time
                                                 FROM dual
@@ -59,7 +59,7 @@ from (SELECT cd.sl,
                          ACTIVEENERGYDELIVERED                                                                                     energy_pre_latest_data,
                          ROW_NUMBER() OVER (PARTITION BY device_id ORDER BY device_id, date_time DESC, ACTIVEENERGYDELIVERED DESC) boi_rnk
                   FROM emeter_health_reading
-                  WHERE date_time < TO_TIMESTAMP(:fromMonth || ' 00:00:01', 'DD-MON-YY HH24:MI:SS')
+                  WHERE date_time < TO_TIMESTAMP(:fromMonth || ' 00:00:01', 'DD-MM-YYYY HH24:MI:SS')
                     AND ACTIVEENERGYDELIVERED > 0)
             WHERE boi_rnk = 1) pd
            ON cd.device_device_id = pd.device_id)
