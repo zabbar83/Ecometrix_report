@@ -64,4 +64,4 @@ from (SELECT cd.sl,
             WHERE boi_rnk = 1) pd
            ON cd.device_device_id = pd.device_id)
 group by start_time, end_time
-order by start_time
+order by start_time;
