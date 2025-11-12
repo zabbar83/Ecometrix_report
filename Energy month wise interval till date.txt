@@ -67,7 +67,7 @@ from (SELECT sl,
                            LEFT JOIN emeter_health_reading ehr
                                      ON dtr.id = ehr.device_id
                                          AND ehr.date_time BETWEEN dtr.start_time AND dtr.end_time
-                                         AND ehr.date_time <= TO_TIMESTAMP(:toYear || '00:00:00', 'DD-MM-YYYY HH24:MI:SS')
+                                         AND ehr.date_time <= TO_TIMESTAMP(:toYear || '23:59:59', 'DD-MM-YYYY HH24:MI:SS')
                                          AND ehr.ACTIVEENERGYDELIVERED > 0
                   group by dtr.sl, dtr.device_device_id, start_time, end_time) dmv
                   left join (
