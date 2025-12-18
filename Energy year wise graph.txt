@@ -1,0 +1,20 @@
+
+SELECT 'Output Device'   AS typeName,
+               dateTime          AS dateTime,
+               Max(maxHighValue) AS totalMaxHighValue
+        FROM (SELECT d.id                              AS id,
+                     d.name                            AS name,
+                     dt.name                           AS typeName,
+                     MAX(ehr.high_value)               AS maxHighValue,
+                     FORMAT(ehr.date_time, 'yyyy') AS dateTime
+              FROM emeter_health_reading ehr
+                       INNER JOIN device d ON ehr.device_id = d.id
+                       INNER JOIN device_type dt ON d.device_type_id = dt.id
+              WHERE
+                 dt.parent_id = 101
+                AND d.unit_id = :unitId
+                AND d.input_type = :inputType
+                AND d.is_active = 1
+                AND d.name != 'GAS-GENERATOR-01'
+              GROUP BY d.id, d.name, dt.name, FORMAT(ehr.date_time, 'yyyy')) a
+        GROUP BY dateTime
